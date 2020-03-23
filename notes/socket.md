@@ -7,12 +7,12 @@
         struct sockaddr_in{ 
             short sin_family; // Type of domina. e.g. AF_INET
             struct in_addr; // reference to struct in_addr;  
-            unsigned int sin_port; // the port, must converted from string to bytes by htons(). 
+            unsigned int sin_port; // the port, must converted from string to bytes by htons() defined in <arpa/inet.h>. 
             char sin_zero[8]; // not used. Must be zero. 
         }; 
 
         struct in_addr{ 
-            unsigned long s_addr; // The ip converted from string format to integer format of address by inet_addr(). 
+            unsigned long s_addr; // The ip converted from string format to integer format of address by inet_addr() defined in <arpa/inet.h>. 
         }; 
 
     ```
@@ -22,7 +22,9 @@
         int socket( int domain, int type, int protocol ); 
             Return -1 if not success or a file descriptor. 
             domain: 
-                AF_INET: transit information through internet. 
+                AF_INET: transit information through internet. The PF_INET is the same as AF_INET. AF = Address Family, PF = Protocol Family.  
+                         [The difference between both](http://students.mimuw.edu.pl/SO/Linux/Kod/include/linux/socket.h.html) 
+                         and [here](https://blog.csdn.net/fivedoumi/article/details/72424784). 
                 AF_UNIX/AF_LOCAL: transit information through processes. 
 
             type: 
@@ -55,16 +57,52 @@
             socklen_t: 
                 the length of addr. 
 
+        int listen( int socket, int backlog ); 
+            Listen for socket connections and limit the queue of incoming connections
+            Return -1 if failed or 0. 
+            socket: 
+                The file descriptor. 
+            backlog: 
+                The maximun capability of the queue. 
+
+        int accept( int socket, struct sockaddr *address, socklen_t *address_len ); 
+            Extracts the first connection on the queue of pending connections, creates a new socket with the same socket type protocol 
+            and address family as the specified socket, and allocates a new file descriptor for that socket.
+            Return -1 if failed or 0. 
+            socket: 
+                The file descriptor that is created by socket(), has been bind(), and has issued a successful call to listen(). 
+            address: 
+                A struct sockaddr that is to store the received client socket information.
+            address_len: 
+                The length of the received soceket. 
+
         // communication functions 
         ssize_t recv( int socket, void * buffer, size_t length, int flags ); 
         ssize_t send( int socket, const void * message, size_t length, int flags ); 
 
     ```
+* arpa/inet.h <br/> 
+    Define for internet operations. 
+    ``` 
+        hton(). htons(), inet_addr() 
+    ``` 
+    
 ### Procedures 
 [procudure](./socket.png) 
+
 #### Client Endpoint 
+1. setting socket about ip address, port, type of protocol with socket( int, int, int ) and struct sockaddr_in. 
+2. connect the client socket to server socket with connect(). 
+3. start to write/read/send/recv and other manipulate 
+4. use close() to terminate the socket 
 
 #### Server Endpoint 
+1. setting socket about ip address, port, type of protocol with socket( int, int, int ) and struct sockaddr_in. 
+2. binding the server's ip address to its socket with bind().  
+3. check the message put in queue by socket using listen() due to the server deals with only one message at a time. 
+4. dealing with the first message and remove it in queue using accept(). Every time the message accepted from queue will be remove from queue and always create a new socket. 
+5. start to write/read/send/recv and other manipulate 
+6. use close() to terminate the socket 
 
 #### Referneces 
 * http://zake7749.github.io/2015/03/17/SocketProgramming/?fbclid=IwAR0x8nxUhfVeLQC1YdYx8JAig6UyKP9-CDwYeO2uJmSe8-fW4ybPX0hD3UM
