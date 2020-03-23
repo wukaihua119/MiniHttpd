@@ -16,13 +16,26 @@
         }; 
 
     ```
+
+* **arpa/inet.h** <br/> 
+    Define for internet operations. 
+    ``` 
+        in_addr_t inet_addr( const char *cp ); 
+            IPv4 address manipulation. 
+            Convert the string pointed to by cp, in the standard IPv4 dotted decimal notation, to an integer value suitable for use as an Internet address.
+            [REFERENCE](https://pubs.opengroup.org/onlinepubs/009695399/functions/inet_addr.html)
+            The in_addr_t is defined in *<netinet/in.h>*. 
+
+        hton(). htons(), inet_addr() 
+    ``` 
+
 * **sys/socket.h** <br/> 
     Define and communicate using socket. 
     ```
         int socket( int domain, int type, int protocol ); 
             Return -1 if not success or a file descriptor. 
             domain: 
-                AF_INET: transit information through internet. The PF_INET is the same as AF_INET. AF = Address Family, PF = Protocol Family.  
+                AF_INET: transit information through internet aka IPv4. The PF_INET is the same as AF_INET. AF = Address Family, PF = Protocol Family.  
                          [The difference between both](http://students.mimuw.edu.pl/SO/Linux/Kod/include/linux/socket.h.html) 
                          and [here](https://blog.csdn.net/fivedoumi/article/details/72424784). 
                 AF_UNIX/AF_LOCAL: transit information through processes. 
@@ -81,11 +94,6 @@
         ssize_t send( int socket, const void * message, size_t length, int flags ); 
 
     ```
-* arpa/inet.h <br/> 
-    Define for internet operations. 
-    ``` 
-        hton(). htons(), inet_addr() 
-    ``` 
     
 ### Procedures 
 [procudure](./socket.png) 
