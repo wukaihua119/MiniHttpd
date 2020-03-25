@@ -15,6 +15,12 @@
             unsigned long s_addr; // The ip converted from string format to integer format of address by inet_addr() defined in <arpa/inet.h>. 
         }; 
 
+        // MACROS 
+        INADDR_ANY: used when you are binding the socket in server side. 
+                    ```INADDR_ANY``` is used when you don't need to bind a socket to a specific IP. 
+                    When you use this value as the address when calling bind(), the socket accepts connections to all the IPs of the machine.
+
+
     ```
 
 * **arpa/inet.h** <br/> 
@@ -26,7 +32,12 @@
             [REFERENCE](https://pubs.opengroup.org/onlinepubs/009695399/functions/inet_addr.html)
             The in_addr_t is defined in *<netinet/in.h>*. 
 
-        hton(). htons(), inet_addr() 
+        char *inet_ntoa( struct in_addr in ); 
+            convert the Internet host address specified by in to a string in the Internet standard dot notation.
+            struct in_addr is defined in *<netinet/in.h>*. 
+
+        htonl(), htons(), ntohl() and ntohs() are defined in this header. 
+        Inclusion of the *<netinet/in.h>* header may also make visible all symbols from *<arpa/inet.h>*.
     ``` 
 
 * **sys/socket.h** <br/> 
@@ -88,6 +99,10 @@
                 A struct sockaddr that is to store the received client socket information.
             address_len: 
                 The length of the received soceket. 
+
+        int setsockopt( int s, int level, int optname, const void *optval, socklen_t len ); 
+            Used to set socket options. 
+            [Reference](http://c.biancheng.net/cpp/html/374.html)  
 
         // communication functions 
         ssize_t recv( int socket, void * buffer, size_t length, int flags ); 
